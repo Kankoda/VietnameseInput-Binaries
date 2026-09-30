@@ -44,9 +44,7 @@ show_error_and_exit() {
 # Define argument variables
 TARGET=""
 PLATFORMS="iOS macOS tvOS watchOS xrOS"  # Default platforms
-HOSTING_BASE_PATH="" # Will be set to TARGET if not provided
-HOSTING_BASE_PATH_SET=false
-
+HOSTING_BASE_PATH=""  # Will be set to TARGET if not specified
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -73,7 +71,6 @@ while [[ $# -gt 0 ]]; do
                 show_error_and_exit "--hosting-base-path requires a value (use \"\" for empty path)"
             fi
             HOSTING_BASE_PATH="$1"
-            HOSTING_BASE_PATH_SET=true
             shift
             ;;
         -h|--help)
@@ -94,7 +91,7 @@ done
 # If no TARGET was provided, try to get package name
 if [ -z "$TARGET" ]; then
     FOLDER="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-    SCRIPT_PACKAGE_NAME="$FOLDER/package-name.sh"
+    SCRIPT_PACKAGE_NAME="$FOLDER/package-name"
 
     if [ ! -f "$SCRIPT_PACKAGE_NAME" ]; then
         show_error_and_exit "Script not found: $SCRIPT_PACKAGE_NAME"
@@ -106,7 +103,7 @@ if [ -z "$TARGET" ]; then
 fi
 
 # Set default hosting base path if not specified
-if [ "$HOSTING_BASE_PATH_SET" = false ]; then
+if [ -z "$HOSTING_BASE_PATH" ]; then
     HOSTING_BASE_PATH="$TARGET"
 fi
 
